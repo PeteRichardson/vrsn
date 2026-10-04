@@ -1,0 +1,44 @@
+name: CI
+
+# Every push to every branch. There is no pull_request trigger: in a private
+# repo with no forks, each PR commit is also a push, so both triggers would run
+# CI twice for the same commit.
+on:
+  push:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # One job rather than four parallel ones. Each job pays the toolchain install
+  # and cache restore again, for a suite that finishes in seconds. The steps
+  # below run in increasing order of cost, so a formatting slip fails before
+  # anything is compiled.
+  check:
+    name: fmt, clippy, test, build
+    # Linux, not macOS: the app has no platform-specific code, and macOS
+    # runners bill at 10x the Linux rate on GitHub-hosted minutes.
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      # Tracks stable rather than pinning. Edition 2024 needs 1.85, and stable
+      # is always past it.
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Format
+        run: cargo fmt --check
+
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Test
+        run: cargo test
+
+      - name: Build
+        run: cargo build --release
