@@ -2,9 +2,12 @@ name: CI
 
 # Every push to every branch. There is no pull_request trigger: in a private
 # repo with no forks, each PR commit is also a push, so both triggers would run
-# CI twice for the same commit.
+# CI twice for the same commit. The branch filter leaves out tag pushes: a
+# release tag points at the release commit, which CI checks when it is pushed
+# to main.
 on:
   push:
+    branches: ["**"]
 
 env:
   CARGO_TERM_COLOR: always
