@@ -17,5 +17,5 @@ struct Cli {}
 
 fn main() {
     Cli::parse();
-    println!("Hello, vrsn {}!", env!("CARGO_PKG_VERSION"));
+    println!("Hello, vrsn {}!", env!("VRSN_VERSION"));
 }
