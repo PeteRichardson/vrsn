@@ -5,7 +5,7 @@ use std::process::Command;
 
 fn vrsn(arg: &str) -> String {
     let out = Command::new(env!("CARGO_BIN_EXE_vrsn"))
-        .arg(arg)
+        .args((!arg.is_empty()).then_some(arg))
         .output()
         .expect("vrsn runs");
     assert!(out.status.success());
@@ -34,4 +34,19 @@ fn long_version_starts_with_the_short_line_and_shows_the_build_time() {
 fn help_shows_the_same_facts_as_long_version() {
     let long = vrsn("--version");
     assert!(vrsn("--help").contains(long.trim_end()));
+}
+
+#[test]
+fn json_has_the_same_facts_as_the_text_greeting() {
+    let out = vrsn("--json");
+    let json: serde_json::Value = serde_json::from_str(&out).expect("valid JSON");
+    assert_eq!(json["greeting"], "Hello");
+    assert_eq!(json["greetee"], "vrsn");
+    let version = json["version"].as_str().expect("version is a string");
+    assert!(version.starts_with(env!("CARGO_PKG_VERSION")), "{version}");
+    assert_eq!(vrsn(""), format!("Hello, vrsn {version}!\n"));
+
+    let position = |key: &str| out.find(&format!("\"{key}\"")).expect("key is present");
+    assert!(position("greeting") < position("greetee"), "{out}");
+    assert!(position("greetee") < position("version"), "{out}");
 }

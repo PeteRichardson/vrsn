@@ -61,12 +61,22 @@ Hello, vrsn 0.1.0 (main)!
 ```
 
 ```
+$ vrsn --json
+{
+  "greeting": "Hello",
+  "greetee": "vrsn",
+  "version": "0.1.0 (main)"
+}
+```
+
+```
 $ vrsn --help
 A dummy app to practice build stamps and releases
 
-Usage: vrsn
+Usage: vrsn [OPTIONS]
 
 Options:
+      --json     Print the greeting as JSON
   -h, --help     Print help
   -V, --version  Print version
 
