@@ -57,7 +57,7 @@ vrsn is not published to crates.io (`publish = false`).
 
 ```
 $ vrsn
-Hello, vrsn 0.1.0 (main)!
+Hello, vrsn 0.2.0!
 ```
 
 ```
@@ -65,7 +65,7 @@ $ vrsn --json
 {
   "greeting": "Hello",
   "greetee": "vrsn",
-  "version": "0.1.0 (main)"
+  "version": "0.2.0"
 }
 ```
 
@@ -80,9 +80,9 @@ Options:
   -h, --help     Print help
   -V, --version  Print version
 
-vrsn 0.1.0 (main)
+vrsn 0.2.0
 checkout: /Users/pete/practice/vrsn
-built: 2026-10-04T16:15:23-07:00
+built: 2026-10-04T16:44:39-07:00
 ```
 
 ---
@@ -103,11 +103,11 @@ built: 2026-10-04T15:19:06-07:00
 | `0.1.0` | The version in `Cargo.toml` |
 | `+g549295e` | At commit `549295e`, with no `vX.Y.Z` tag before it (`g` is for git, as in `git describe`). After a tag, the number of commits since the tag comes first: `+3.g549295e` |
 | `.dirty` | Tracked files have changes that are not committed. It does not say which changes |
-| `(Fix-I1-build-stamp)` | The branch, or `(detached)` |
+| `(Fix-I1-build-stamp)` | The branch, or `(detached)`. Not shown on a release build |
 | `checkout:` | The directory the build came from |
 | `built:` | Local time of the last real rebuild |
 
-A clean build exactly on a tag shows only `vrsn 0.1.0 (main)`. A build with no git shows `vrsn 0.1.0` and the `built:` line.
+A release build — clean, and exactly on a `vX.Y.Z` tag — shows only `vrsn 0.2.0`, with no `+` part and no branch. So does a build with no git, which also has no `checkout:` line. If `-V` shows a `+` or a branch, the build is not a release.
 
 **When the stamp changes.** The build script reruns only when `src/`, `build.rs`, `Cargo.toml` or `Cargo.lock` changes, or when git's `HEAD`, index, the current branch ref, `packed-refs` or `refs/tags` changes. So a commit, a checkout, a `git add` or a new tag updates the stamp, and a `cargo build` with no changes stays instant.
 

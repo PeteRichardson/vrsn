@@ -20,14 +20,15 @@ pub struct Git {
 /// `0.2.3+5.g1a2b3c4.dirty (branch)`.
 ///
 /// The `+` part is SemVer build metadata in the `git describe` format. A
-/// clean build exactly on a tag has no `+` part. With no git, the line is the
-/// release version only.
+/// release build (clean, exactly on a tag) and a build with no git are the
+/// release version only: a release build contains exactly the release code,
+/// so the branch says nothing about it.
 pub fn short(version: &str, git: Option<&Git>) -> String {
     let Some(git) = git else {
         return version.to_string();
     };
     let mut metadata = match git.since_tag {
-        Some(0) if !git.dirty => String::new(),
+        Some(0) if !git.dirty => return version.to_string(),
         Some(n) => format!("+{n}.g{}", git.hash),
         None => format!("+g{}", git.hash),
     };
@@ -102,9 +103,15 @@ mod tests {
     }
 
     #[test]
-    fn clean_on_a_tag_has_no_metadata() {
+    fn clean_on_a_tag_is_the_version_only() {
         let git = git(Some(0), false, Some("main"));
-        assert_eq!(short("0.2.3", Some(&git)), "0.2.3 (main)");
+        assert_eq!(short("0.2.3", Some(&git)), "0.2.3");
+    }
+
+    #[test]
+    fn clean_on_a_tag_with_detached_head_is_the_version_only() {
+        let git = git(Some(0), false, None);
+        assert_eq!(short("0.2.3", Some(&git)), "0.2.3");
     }
 
     #[test]
