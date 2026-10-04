@@ -94,8 +94,11 @@ impl Checkout {
                 .and_then(|out| stamp::parse_describe(&out)),
             hash: git(&["rev-parse", "--short=7", "HEAD"]).unwrap_or_default(),
             // `--no-optional-locks` stops `git status` from writing the
-            // index. Without it, the write makes the index newer than this
-            // build, and Cargo reruns the script on every build.
+            // index. Without it, a status that refreshes the index (after a
+            // touch, or a save with no change) makes the index newer than
+            // this build, and the next build reruns the script for nothing.
+            // It also keeps the script from taking `index.lock` while you
+            // run a git command of your own.
             dirty: git(&[
                 "--no-optional-locks",
                 "status",
