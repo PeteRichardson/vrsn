@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.0 — 2026-10-04
+
+### Features
+
+- **stamp:** Show only the version on a clean build at a release tag
+
 ## v0.2.0 — 2026-10-04
 
 ### Features
