@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.1 — 2026-10-13
+
+No changes that affect the user.
+
 ## v0.3.0 — 2026-10-04
 
 ### Features
