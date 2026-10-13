@@ -24,11 +24,10 @@ pub struct Git {
 /// release version only: a release build contains exactly the release code,
 /// so the branch says nothing about it.
 pub fn short(version: &str, git: Option<&Git>) -> String {
-    let Some(git) = git else {
+    let Some(git) = git.filter(|git| git.dirty || git.since_tag != Some(0)) else {
         return version.to_string();
     };
     let mut metadata = match git.since_tag {
-        Some(0) if !git.dirty => return version.to_string(),
         Some(n) => format!("+{n}.g{}", git.hash),
         None => format!("+g{}", git.hash),
     };

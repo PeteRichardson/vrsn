@@ -12,7 +12,7 @@ const LONG_VERSION: &str = include_str!(concat!(env!("OUT_DIR"), "/long_version.
 #[command(
     version = VERSION,
     long_version = LONG_VERSION,
-    after_help = concat!("vrsn ", include_str!(concat!(env!("OUT_DIR"), "/long_version.txt"))),
+    after_help = format!("vrsn {LONG_VERSION}"),
 )]
 struct Cli {
     /// Print the greeting as JSON
